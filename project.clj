@@ -1,4 +1,4 @@
-(defproject influxdb/influxdb-clojure "0.1.0-SNAPSHOT"
+(defproject influxdb/influxdb-clojure "0.1.0"
   :description "Minimalistic InfluxDB client for Clojure, implemented as a wrapper
                 around the InfluxDB Java client. Compatible with InfluxDB >= 0.9."
   :url "https://github.com/mnuessler/influxdb-clojure"

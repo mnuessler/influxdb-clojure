@@ -4,6 +4,38 @@ A minimalistic [InfluxDB][influxdb] client for Clojure, implemented as
 a wrapper around the [Java InfluxDB client][influxdb-java]. Compatible
 with InfluxDB >= 0.9.
 
+If you are lookig for officially supported InfluxDB clients please
+refer to [this list][clients].
+
+## Artifacts
+
+Artifacts are [released to Clojars][clojars].
+
+If you are using Maven, add the following repository definition to your `pom.xml`:
+
+```xml
+<repository>
+  <id>clojars.org</id>
+  <url>http://clojars.org/repo</url>
+</repository>
+```
+
+### The Most Recent Release
+
+With Leiningen:
+
+[![Clojars Project](https://img.shields.io/clojars/v/influxdb/influxdb-clojure.svg)][clojars]
+
+With Maven:
+
+```xml
+<dependency>
+  <groupId>influxdb</groupId>
+  <artifactId>influxdb-clojure</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
 ## Usage
 
 ### Write points
@@ -69,5 +101,7 @@ Copyright © 2016 Matthias Nüßler
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
 
+[clients]: https://docs.influxdata.com/influxdb/v0.12/clients/api/
+[clojars]: https://clojars.org/influxdb/influxdb-clojure
 [influxdb]: https://influxdata.com/time-series-platform/influxdb/
 [influxdb-java]: https://github.com/influxdata/influxdb-java
