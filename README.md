@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/mnuessler/influxdb-clojure.png?label=ready&title=Ready)](https://waffle.io/mnuessler/influxdb-clojure)
 # InfluxDB Clojure
 
 A minimalistic [InfluxDB][influxdb] client for Clojure, implemented as
