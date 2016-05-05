@@ -95,6 +95,32 @@ Optionally, retention policy and consistency level may be specified:
 (influxdb/write-points conn "mydb" [point] opts)
 ```
 
+### HTTP Client Configuration
+
+In some cases it may be useful to customize certain HTTP client
+parameters such as connect timeout. Timeout parameters can be passed
+as part of an option map when the connection is created (in ms):
+
+```clj
+(def opts {:connect-timeout 1000
+           :read-timeout    5000
+           :write-timeout   1000})
+(def conn (influxdb/connect "http://localhost:8086" "root", "root" opts))
+```
+
+In case additional configuration for the HTTP client is required, a
+client instance can be passed instead:
+
+```clj
+(import (retrofit.client OkClient)
+        (com.squareup.okhttp OkHttpClient)
+        (java.util.concurrent TimeUnit))
+(def http-client (OkHttpClient.))
+(.setConnectTimeout http-client 5000 (TimeUnit/MILLISECONDS))
+(def client (OkClient http-client)
+(def conn (influxdb/connect "http://localhost:8086" "root", "root" {:client client}))
+```
+
 ## License
 
 Copyright © 2016 Matthias Nüßler

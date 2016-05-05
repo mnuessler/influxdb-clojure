@@ -4,13 +4,32 @@
             [clj-time.core :as t])
   (:import (org.influxdb InfluxDB InfluxDBFactory InfluxDB$ConsistencyLevel)
            (org.influxdb.dto BatchPoints Point BatchPoints$Builder Point$Builder Query QueryResult QueryResult$Result QueryResult$Series)
-           (java.util.concurrent TimeUnit)))
+           (java.util.concurrent TimeUnit)
+           (retrofit.client OkClient)
+           (com.squareup.okhttp OkHttpClient)))
 
 (def ^:private default-uri "http://localhost:8086")
 
 (def ^:private default-user "root")
 
 (def ^:private default-password "root")
+
+(def ^:private connection-default-opts
+  {:connect-timeout (* 1 1000)
+   :read-timeout    (* 5 1000)
+   :write-timeout   (* 1 1000)})
+
+(defn- default-client [opts]
+  (let [{:keys [connect-timeout
+                read-timeout
+                write-timeout]} (merge connection-default-opts opts)
+        ^OkHttpClient http-client (OkHttpClient.)
+        ^TimeUnit time-unit (TimeUnit/MILLISECONDS)]
+    (doto http-client
+      (.setConnectTimeout connect-timeout time-unit)
+      (.setReadTimeout read-timeout time-unit)
+      (.setWriteTimeout write-timeout time-unit))
+    (OkClient. http-client)))
 
 (defn connect
   "Connects to the given InfluxDB endpoint and returns a connection"
@@ -19,7 +38,15 @@
   (^InfluxDB [uri]
    (connect uri default-user default-password))
   (^InfluxDB [uri user password]
-   (InfluxDBFactory/connect uri user password)))
+   (connect uri user password {}))
+  (^InfluxDB [uri user password opts]
+    ;; Create our own OkHttpClient so that we can set connection parameters.
+    ;; The default timeouts set by the underlying Retrofit/OkHttpClient implementation
+    ;; are rather high: connect timeout: 15s, read timeout: 20s.
+    ;; See: retrofit.client.Defaults.
+   (let [{:keys [client]
+          :or   {client (default-client opts)}} opts]
+     (InfluxDBFactory/connect uri user password client))))
 
 (defn create-database
   "Creates the database with the given name"

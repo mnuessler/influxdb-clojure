@@ -1,6 +1,8 @@
 (ns influxdb-clojure.core-test
   (:require [clojure.test :refer :all]
-            [influxdb-clojure.core :refer :all]))
+            [clojure.tools.logging :as log]
+            [influxdb-clojure.core :refer :all]
+            [version-clj.core :refer [version-compare]]))
 
 (defn with-test-db [f]
   (let [conn (connect)
@@ -10,6 +12,15 @@
 ;    (delete-database conn test-db-name)))
 
 (use-fixtures :each with-test-db)
+
+(deftest ping-test
+  (let [conn (connect)
+        resp (ping conn)
+        version (:version resp)]
+    (log/debug "InfluxDB version:" version)
+    (is (not (empty? version)))
+    (is (> 0 (version-compare "0.9" version)))
+    (is (> 100 (:response-time resp)))))
 
 (deftest database-tests
   (testing "database creation and deletion"
