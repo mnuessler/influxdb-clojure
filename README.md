@@ -1,5 +1,6 @@
-[![Stories in Ready](https://badge.waffle.io/mnuessler/influxdb-clojure.png?label=ready&title=Ready)](https://waffle.io/mnuessler/influxdb-clojure)
 # InfluxDB Clojure
+[![Clojars Project][clojars-shields-badge]][clojars]
+[![Stories in Ready][waffle-badge]][waffle-board]
 
 A minimalistic [InfluxDB][influxdb] client for Clojure, implemented as
 a wrapper around the [Java InfluxDB client][influxdb-java]. Compatible
@@ -25,7 +26,7 @@ If you are using Maven, add the following repository definition to your `pom.xml
 
 With Leiningen:
 
-[![Clojars Project](https://img.shields.io/clojars/v/influxdb/influxdb-clojure.svg)][clojars]
+[![Clojars Project][clojars-latest-badge]][clojars]
 
 With Maven:
 
@@ -91,7 +92,7 @@ not explicitly set.)
 Optionally, retention policy and consistency level may be specified:
 
 ```clj
-(def opts {:retention-policy "six_month_rollup", :consistency-level :quorum}
+(def opts {:retention-policy "six_month_rollup", :consistency-level :quorum})
 (influxdb/write-points conn "mydb" [point] opts)
 ```
 
@@ -117,7 +118,7 @@ client instance can be passed instead:
         (java.util.concurrent TimeUnit))
 (def http-client (OkHttpClient.))
 (.setConnectTimeout http-client 5000 (TimeUnit/MILLISECONDS))
-(def client (OkClient http-client)
+(def client (OkClient http-client))
 (def conn (influxdb/connect "http://localhost:8086" "root", "root" {:client client}))
 ```
 
@@ -132,3 +133,8 @@ your option) any later version.
 [clojars]: https://clojars.org/influxdb/influxdb-clojure
 [influxdb]: https://influxdata.com/time-series-platform/influxdb/
 [influxdb-java]: https://github.com/influxdata/influxdb-java
+
+[clojars-latest-badge]: http://clojars.org/influxdb/influxdb-clojure/latest-version.svg
+[clojars-shields-badge]: https://img.shields.io/clojars/v/influxdb/influxdb-clojure.svg
+[waffle-badge]: https://badge.waffle.io/mnuessler/influxdb-clojure.png?label=ready&title=Ready
+[waffle-board]: https://waffle.io/mnuessler/influxdb-clojure
