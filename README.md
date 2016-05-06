@@ -40,8 +40,6 @@ With Maven:
 
 ## Usage
 
-### Write points
-
 Require the `influxdb-clojure` namespace:
 
 ```clj
@@ -75,6 +73,8 @@ Delete a database:
 => ("_internal")
 ```
 
+### Writing Data
+
 Write a point to a database (retention policy "default"):
 
 ```clj
@@ -94,6 +94,24 @@ Optionally, retention policy and consistency level may be specified:
 ```clj
 (def opts {:retention-policy "six_month_rollup", :consistency-level :quorum})
 (influxdb/write-points conn "mydb" [point] opts)
+```
+
+### Querying Data
+
+```clj
+(influxdb/query conn "SHOW DATABASES")
+=>
+{:results [{:series [{:name "databases",
+                      :colums ["name"],
+                      :values [["_internal"] ["mydb"]]}]}]}
+```
+
+```clj
+(influxdb/query conn "SELECT * FROM \"cpu_load_short\" WHERE host='server01'" "mydb")
+=>
+{:results [{:series [{:name "cpu_load_short",
+                      :colums ["time" "host" "region" "value"],
+                      :values [["2016-05-05T06:06:46.996Z" "server01" "us-west" 0.64]]}]}]}
 ```
 
 ### HTTP Client Configuration

@@ -2,6 +2,8 @@
   (:require [clojure.test :refer :all]
             [clojure.tools.logging :as log]
             [influxdb-clojure.core :refer :all]
+            [clj-time.core :refer [now]]
+            [clj-time.coerce :refer [to-long]]
             [version-clj.core :refer [version-compare]]))
 
 (defn with-test-db [f]
@@ -27,7 +29,7 @@
     (defn db-exists? [conn db-name]
       (.contains (databases conn) db-name))
     (let [conn (connect)
-          db-name (str "create_db_test_" (System/currentTimeMillis))]
+          db-name (str "create_db_test_" (to-long (now)))]
       (do
         (create-database conn db-name)
         (is (db-exists? conn db-name))
@@ -40,6 +42,58 @@
           test-db-name "influxdb_clojure_test"
           fields {:value 23}
           point {:measurement "test.write"
-                 :time        (System/currentTimeMillis)
+                 :time        (to-long (now))
                  :fields      fields}]
       (write-points conn test-db-name [point]))))
+
+;; Helper functions for query tests
+(defn- count-results [query-result]
+  (count (:results query-result)))
+
+(defn- count-series [query-result]
+  (let [result-index 0]
+    (count (:series (get (:results query-result) result-index)))))
+
+(defn- series-name [query-result]
+  (let [first-result (first (:results query-result))
+        first-series (first (:series first-result))]
+    (:name first-series)))
+
+(defn- series-columns [query-result]
+  (let [first-result (first (:results query-result))
+        first-series (first (:series first-result))]
+    (:colums first-series)))
+
+(defn- series-values [query-result]
+  (let [first-result (first (:results query-result))
+        first-series (first (:series first-result))]
+    (:values first-series)))
+
+(defn- series-nth-value [query-result row-index field]
+  (defn positions [pred coll]
+    (keep-indexed (fn [idx x] (when (pred x) idx)) coll))
+  (let [values (series-values query-result)
+        columns (series-columns query-result)
+        field-index (first (positions #{field} columns))]
+    (get (get values row-index) field-index)))
+
+(deftest query-tests
+  (testing "select from series with success"
+    (let [conn (connect)
+          test-db-name "influxdb_clojure_test"
+          query-str "select * from \"test.write\""
+          query-result (query conn query-str test-db-name)]
+      (log/debug "Query:" query-str "->" query-result)
+      (is (= 1 (count-results query-result)))
+      (is (= 1 (count-series query-result)))
+      (is (= "test.write" (series-name query-result)))
+      (is (= ["time" "value"] (series-columns query-result)))
+      (is (< 34 (count (series-values query-result))))
+      (is (= "2016-04-12T04:40:41.664Z" (series-nth-value query-result 0 "time")))))
+  (testing "query with error"
+    (let [conn (connect)
+          test-db-name "influxdb_clojure_test"
+          query-str "invalid query"]
+      (is (thrown? RuntimeException
+                   (query conn test-db-name query-str))))))
+

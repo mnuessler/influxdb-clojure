@@ -100,3 +100,23 @@
      (doseq [point-object point-objects]
        (.point batch-builder point-object))
      (.write conn (.build batch-builder)))))
+
+(defn query
+  "Executes a database query"
+  ([^InfluxDB conn ^String query-str]
+   (query conn query-str nil))
+  ([^InfluxDB conn ^String query-str ^String database-name]
+   (defn convert-series [^QueryResult$Series series]
+     (assoc {} :name (.getName series)
+               :colums (into [] (.getColumns series))
+               :values (into [] (map #(into [] %) (.getValues series)))))
+   (defn convert-result [^QueryResult$Result result]
+     (if (.hasError result)
+       {:error (.getError result)})
+     (assoc {} :series (into [] (map convert-series (.getSeries result)))))
+   (let [^Query query (Query. query-str database-name)
+         ^QueryResult query-result (.query conn query)
+         response {}]
+     (if (.hasError query-result)
+       (assoc response :error (.getError query-result)))
+     (assoc response :results (into [] (map convert-result (.getResults query-result)))))))

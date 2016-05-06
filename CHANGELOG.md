@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
 ### Added
+- Support for querying data ([#1][issue-1]).
 - Support setting of configuration options for the underlying HTTP
   client ([#4][issue-4]).
 - This CHANGELOG file.
@@ -18,4 +19,5 @@ This project adheres to [Semantic Versioning][semver].
 
 [Unreleased]: https://github.com/mnuessler/influxdb-clojure/compare/v0.1.0...HEAD
 
+[issue-1]: https://github.com/mnuessler/influxdb-clojure/issues/1
 [issue-4]: https://github.com/mnuessler/influxdb-clojure/issues/4
