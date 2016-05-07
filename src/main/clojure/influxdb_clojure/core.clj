@@ -120,3 +120,25 @@
      (if (.hasError query-result)
        (assoc response :error (.getError query-result)))
      (assoc response :results (into [] (map convert-result (.getResults query-result)))))))
+
+(defn measurements
+  "Returns a list of measurements present in a database"
+  [^InfluxDB conn ^String database-name]
+  (-> (query conn "SHOW MEASUREMENTS" database-name)
+      :results
+      first
+      :series
+      first
+      :values
+      flatten))
+
+(defn series
+  "Returns a list of series present in a database"
+  [^InfluxDB conn ^String database-name]
+  (-> (query conn "SHOW SERIES" database-name)
+      :results
+      first
+      :series
+      first
+      :values
+      flatten))

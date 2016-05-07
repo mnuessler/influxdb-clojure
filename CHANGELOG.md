@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
 ### Added
+- Add convenience functions `measurements` and `series`.
 - Support for querying data ([#1][issue-1]).
 - Support setting of configuration options for the underlying HTTP
   client ([#4][issue-4]).

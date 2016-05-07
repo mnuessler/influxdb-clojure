@@ -97,3 +97,18 @@
       (is (thrown? RuntimeException
                    (query conn test-db-name query-str))))))
 
+(deftest measurement-tests
+  (testing "show measurements for db"
+    (let [conn (connect)
+          db-name "influxdb_clojure_test"
+          ms (measurements conn db-name)]
+      (log/debug "Measurements:" ms)
+      (is (= '("test.write") ms)))))
+
+(deftest series-tests
+  (testing "show series for db"
+    (let [conn (connect)
+          db-name "influxdb_clojure_test"
+          ss (series conn db-name)]
+      (log/debug "Series:" ss)
+      (is (= '("test.write") ss)))))
