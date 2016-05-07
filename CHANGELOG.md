@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning][semver].
 
-## [Unreleased]
+## [0.2.0] - 2016-05-07
 ### Added
 - Add convenience functions `measurements` and `series`.
 - Support for querying data ([#1][issue-1]).
@@ -18,7 +18,8 @@ This project adheres to [Semantic Versioning][semver].
 
 [semver]: http://semver.org/
 
-[Unreleased]: https://github.com/mnuessler/influxdb-clojure/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/mnuessler/influxdb-clojure/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/mnuessler/influxdb-clojure/compare/v0.1.0...v0.2.0
 
 [issue-1]: https://github.com/mnuessler/influxdb-clojure/issues/1
 [issue-4]: https://github.com/mnuessler/influxdb-clojure/issues/4
