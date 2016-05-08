@@ -38,6 +38,12 @@ With Maven:
 </dependency>
 ```
 
+With Gradle:
+
+```groovy
+compile "influxdb:influxdb-clojure:0.2.0"
+```
+
 ## Usage
 
 Require the `influxdb-clojure` namespace:
@@ -136,7 +142,8 @@ client instance can be passed instead:
         (java.util.concurrent TimeUnit))
 (def http-client (OkHttpClient.))
 (.setConnectTimeout http-client 5000 (TimeUnit/MILLISECONDS))
-(def client (OkClient http-client))
+(.setReadTimeout http-client 5000 (TimeUnit/MILLISECONDS))
+(def client (OkClient. http-client))
 (def conn (influxdb/connect "http://localhost:8086" "root", "root" {:client client}))
 ```
 
