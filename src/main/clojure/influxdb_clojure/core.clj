@@ -67,7 +67,8 @@
   "Pings the InfluxDB instance. Returns InfluxDB version and response time."
   [^InfluxDB conn]
   (let [pong (.ping conn)]
-    {:version (.getVersion pong) :response-time (.getResponseTime pong)}))
+    {:version       (.getVersion pong)
+     :response-time (.getResponseTime pong)}))
 
 (defn- convert-point [batch-time batch-tags point]
   (let [{:keys [measurement tags fields time]
@@ -107,19 +108,23 @@
    (query conn query-str nil))
   ([^InfluxDB conn ^String query-str ^String database-name]
    (defn convert-series [^QueryResult$Series series]
-     (assoc {} :name (.getName series)
-               :colums (into [] (.getColumns series))
-               :values (into [] (map #(into [] %) (.getValues series)))))
+     {:name   (.getName series)
+      :colums (into [] (.getColumns series))
+      :values (into [] (map #(into [] %) (.getValues series)))})
    (defn convert-result [^QueryResult$Result result]
      (if (.hasError result)
        {:error (.getError result)})
-     (assoc {} :series (into [] (map convert-series (.getSeries result)))))
+     {:series (into [] (map convert-series (.getSeries result)))})
    (let [^Query query (Query. query-str database-name)
          ^QueryResult query-result (.query conn query)
          response {}]
      (if (.hasError query-result)
        (assoc response :error (.getError query-result)))
-     (assoc response :results (into [] (map convert-result (.getResults query-result)))))))
+     (->> query-result
+          .getResults
+          (map convert-result)
+          (into [])
+          (assoc response :results)))))
 
 (defn measurements
   "Returns a list of measurements present in a database"
