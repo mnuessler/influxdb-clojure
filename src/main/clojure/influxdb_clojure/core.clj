@@ -17,7 +17,7 @@
 (def ^:private connection-default-opts
   {:connect-timeout (* 1 1000)
    :read-timeout    (* 5 1000)
-   :write-timeout   (* 1 1000)})
+   :write-timeout   (* 5 1000)})
 
 (defn- default-client [opts]
   (let [{:keys [connect-timeout
