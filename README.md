@@ -1,9 +1,9 @@
 # InfluxDB Clojure
-[![Clojars Project][clojars-shields-badge]][clojars]
-[![Stories in Ready][waffle-badge]][waffle-board]
 
-A minimalistic [InfluxDB][influxdb] client for Clojure, implemented as
-a wrapper around the [Java InfluxDB client][influxdb-java]. Compatible
+[![Dependencies Status][depstatus-badge]][jarkeeper]
+
+A simple [InfluxDB][influxdb] client for Clojure, implemented as a
+wrapper around the [Java InfluxDB client][influxdb-java]. Compatible
 with InfluxDB >= 0.9.
 
 If you are lookig for officially supported InfluxDB clients please
@@ -158,8 +158,7 @@ your option) any later version.
 [clojars]: https://clojars.org/influxdb/influxdb-clojure
 [influxdb]: https://influxdata.com/time-series-platform/influxdb/
 [influxdb-java]: https://github.com/influxdata/influxdb-java
+[jarkeeper]: https://jarkeeper.com/mnuessler/influxdb-clojure
 
+[depstatus-badge]: https://jarkeeper.com/mnuessler/influxdb-clojure/status.svg
 [clojars-latest-badge]: http://clojars.org/influxdb/influxdb-clojure/latest-version.svg
-[clojars-shields-badge]: https://img.shields.io/clojars/v/influxdb/influxdb-clojure.svg
-[waffle-badge]: https://badge.waffle.io/mnuessler/influxdb-clojure.png?label=ready&title=Ready
-[waffle-board]: https://waffle.io/mnuessler/influxdb-clojure
