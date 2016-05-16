@@ -1,5 +1,5 @@
 (defproject influxdb/influxdb-clojure "0.3.0-SNAPSHOT"
-  :description "Minimalistic InfluxDB client for Clojure, implemented as a wrapper
+  :description "Simple InfluxDB client for Clojure, implemented as a wrapper
                 around the InfluxDB Java client. Compatible with InfluxDB >= 0.9."
   :url "https://github.com/mnuessler/influxdb-clojure"
   :license {:name "Eclipse Public License"

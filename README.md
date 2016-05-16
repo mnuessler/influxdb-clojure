@@ -1,6 +1,7 @@
 # InfluxDB Clojure
 
 [![Dependencies Status][depstatus-badge]][jarkeeper]
+[![Downloads][dl-badge]][jarkeeper]
 
 A simple [InfluxDB][influxdb] client for Clojure, implemented as a
 wrapper around the [Java InfluxDB client][influxdb-java]. Compatible
@@ -161,4 +162,5 @@ your option) any later version.
 [jarkeeper]: https://jarkeeper.com/mnuessler/influxdb-clojure
 
 [depstatus-badge]: https://jarkeeper.com/mnuessler/influxdb-clojure/status.svg
+[dl-badge]: https://jarkeeper.com/mnuessler/influxdb-clojure/downloads.svg
 [clojars-latest-badge]: http://clojars.org/influxdb/influxdb-clojure/latest-version.svg
