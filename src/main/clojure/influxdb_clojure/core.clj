@@ -84,31 +84,44 @@
        (.point batch-builder point-object))
      (.write conn (.build batch-builder)))))
 
+(defn convert-query-result [^QueryResult query-result]
+  (letfn [(convert-series [^QueryResult$Series series]
+            {:name   (.getName series)
+             :colums (into [] (.getColumns series))
+             :values (into [] (map #(into [] %) (.getValues series)))})
+          (convert-result [^QueryResult$Result result]
+            (if (.hasError result)
+              {:error (.getError result)})
+            {:series (into [] (map convert-series (.getSeries result)))})]
+    (let [response {}]
+      (if (.hasError query-result)
+        (assoc response :error (.getError query-result))
+        (->> query-result
+             .getResults
+             (map convert-result)
+             (into [])
+             (assoc response :results))))))
+
 (defn query
   "Executes a database query"
   ([^InfluxDB conn ^String query-str]
    (query conn query-str nil))
   ([^InfluxDB conn ^String query-str ^String database-name]
-   (defn convert-series [^QueryResult$Series series]
-     {:name   (.getName series)
-      :colums (into [] (.getColumns series))
-      :values (into [] (map #(into [] %) (.getValues series)))})
-   (defn convert-result [^QueryResult$Result result]
-     (if (.hasError result)
-       {:error (.getError result)})
-     {:series (into [] (map convert-series (.getSeries result)))})
    (let [^Query query (Query. query-str database-name)
-         ^QueryResult query-result (.query conn query)
-         response {}]
-     (if (.hasError query-result)
-       (assoc response :error (.getError query-result)))
-     (->> query-result
-          .getResults
-          (map convert-result)
-          (into [])
-          (assoc response :results)))))
+         ^QueryResult query-result (.query conn query)]
+     (convert-query-result query-result))))
 
-
+(defn query-chunked
+  "Executes a chunked database query executing callback every chunk
+  after last chunk has been processed, sends a last chunk in the
+  form of {:error :done}"
+  ([^InfluxDB conn ^String query-str ^Integer chunk-size ^String database-name callback-fn]
+   (let [^Query query (Query. query-str database-name)
+         rewrite-done #(if (= (:error %) "DONE") {:error :done} %)
+         consumer (reify java.util.function.Consumer
+                    (accept [this t]
+                      (callback-fn (-> t convert-query-result rewrite-done))))]
+     (.query conn query chunk-size consumer))))
 
 (defn measurements
   "Returns a list of measurements present in a database"
