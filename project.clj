@@ -6,7 +6,7 @@
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :min-lein-version "2.5.0"
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.influxdb/influxdb-java "2.2"]
+                 [org.influxdb/influxdb-java "2.7"]
                  [org.clojure/tools.logging "0.3.1"]
                  [clj-time "0.12.0"]]
   :source-paths ["src/main/clojure"]

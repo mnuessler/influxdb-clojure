@@ -4,14 +4,25 @@
             [influxdb-clojure.core :refer :all]
             [clj-time.core :refer [now]]
             [clj-time.coerce :refer [to-long]]
-            [version-clj.core :refer [version-compare]]))
+            [version-clj.core :refer [version-compare]]
+            [clj-time.core :as t]))
+
+(defn fixture-write-points []
+  (let [conn (connect)
+        test-db-name "influxdb_clojure_test"
+        fields {:value 23}
+        point {:measurement "test.write"
+               :time        (to-long (t/date-time 2000 1 1))
+               :fields      fields}]
+    (write-points conn test-db-name [point])))
 
 (defn with-test-db [f]
   (let [conn (connect)
         test-db-name "influxdb_clojure_test"]
+    (delete-database conn test-db-name)
     (create-database conn test-db-name)
+    (fixture-write-points)
     (f)))
-;    (delete-database conn test-db-name)))
 
 (use-fixtures :each with-test-db)
 
@@ -36,15 +47,7 @@
         (delete-database conn db-name)
         (is (not (db-exists? conn db-name)))))))
 
-(deftest write-tests
-  (testing "write-points"
-    (let [conn (connect)
-          test-db-name "influxdb_clojure_test"
-          fields {:value 23}
-          point {:measurement "test.write"
-                 :time        (to-long (now))
-                 :fields      fields}]
-      (write-points conn test-db-name [point]))))
+
 
 ;; Helper functions for query tests
 (defn- count-results [query-result]
@@ -88,8 +91,8 @@
       (is (= 1 (count-series query-result)))
       (is (= "test.write" (series-name query-result)))
       (is (= ["time" "value"] (series-columns query-result)))
-      (is (< 34 (count (series-values query-result))))
-      (is (= "2016-04-12T04:40:41.664Z" (series-nth-value query-result 0 "time")))))
+      (is (= 1 (count (series-values query-result))))
+      (is (= "2000-01-01T00:00:00Z" (series-nth-value query-result 0 "time")))))
   (testing "query with error"
     (let [conn (connect)
           test-db-name "influxdb_clojure_test"
@@ -112,3 +115,5 @@
           ss (series conn db-name)]
       (log/debug "Series:" ss)
       (is (= '("test.write") ss)))))
+
+#_ (series (connect) "influxdb_clojure_test")
